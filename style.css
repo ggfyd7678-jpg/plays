@@ -1,0 +1,894 @@
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0 0 90px;
+    background: #0b1220;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+button, select {
+    font-family: inherit;
+}
+
+button {
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover {
+    filter: brightness(1.15);
+    transform: translateY(-2px);
+}
+
+button:disabled {
+    cursor: not-allowed;
+    transform: none;
+    filter: none;
+}
+
+.top-bar {
+    background: #101b30;
+    padding: 15px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    border-bottom: 2px solid #00d9ff;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    color: #00d9ff;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.wallet,
+.best {
+    background: #263449;
+    padding: 10px 15px;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+.container {
+    width: 95%;
+    max-width: 900px;
+    margin: 20px auto;
+    min-height: 70vh;
+}
+
+.page {
+    display: none;
+    animation: pageShow 0.3s ease;
+}
+
+.page.active-page {
+    display: block;
+}
+
+.hidden {
+    display: none !important;
+}
+
+@keyframes pageShow {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.panel {
+    background: #17243a;
+    padding: 18px;
+    border-radius: 14px;
+    margin-bottom: 18px;
+    border: 1px solid #30415c;
+    box-shadow: 0 5px 15px #00000022;
+}
+
+.panel h2 {
+    color: #00d9ff;
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 18px;
+}
+
+.panel p {
+    line-height: 1.7;
+}
+
+.track-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.track-btn {
+    background: #263449;
+    color: white;
+    border: 0;
+    padding: 12px 5px;
+    border-radius: 8px;
+}
+
+.track-btn.active {
+    background: #087f8c;
+    outline: 2px solid #00d9ff;
+}
+
+/* إعدادات الصعوبة والتحكم */
+
+#difficultySelect,
+#controlMode {
+    width: 100%;
+    background: #263449;
+    color: white;
+    padding: 13px;
+    border: 1px solid #40536e;
+    border-radius: 8px;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+#difficultySelect option,
+#controlMode option,
+.menu-content select option {
+    background: #17243a;
+    color: white;
+}
+
+.control-settings {
+    max-width: 400px;
+    margin: 15px auto 5px;
+    padding: 12px;
+    background: #17243a;
+    border: 1px solid #30415c;
+    border-radius: 10px;
+}
+
+.control-settings label,
+#settingsPage label {
+    display: block;
+    margin-bottom: 8px;
+    color: #00d9ff;
+    font-weight: bold;
+    text-align: center;
+}
+
+#controlHint {
+    color: #aebed3;
+    font-size: 13px;
+    text-align: center;
+    margin-bottom: 0;
+    line-height: 1.6;
+}
+
+/* منطقة السباق */
+
+.game-area {
+    background: #101b30;
+    border-radius: 15px;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #30415c;
+}
+
+.game-hud {
+    display: flex;
+    justify-content: space-around;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.canvas-wrap {
+    width: 100%;
+    max-width: 400px;
+    margin: auto;
+    position: relative;
+    overflow: hidden;
+    border: 3px solid #00d9ff;
+    border-radius: 10px;
+    background: #222;
+}
+
+#gameCanvas {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.countdown {
+    position: absolute;
+    z-index: 10;
+    top: 40%;
+    width: 100%;
+    text-align: center;
+    font-size: 75px;
+    font-weight: bold;
+    color: #ffd700;
+    text-shadow: 0 0 20px #ff6d00;
+    pointer-events: none;
+}
+
+.pause-overlay,
+.result-screen {
+    position: absolute;
+    inset: 0;
+    background: rgba(5, 12, 28, 0.94);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    z-index: 20;
+}
+
+.pause-overlay h2,
+.result-screen h2 {
+    color: #ffd700;
+}
+
+.result-screen button,
+.pause-overlay button {
+    width: 85%;
+    max-width: 250px;
+    padding: 13px;
+    margin: 7px;
+    border: 0;
+    border-radius: 8px;
+    background: #087f8c;
+    color: white;
+    font-weight: bold;
+}
+
+#medalResult {
+    font-size: 55px;
+}
+
+/* النيترو */
+
+.nitro-panel {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    align-items: center;
+    margin: 15px auto;
+    flex-wrap: wrap;
+}
+
+.nitro-bar {
+    width: 45%;
+    height: 15px;
+    background: #303d52;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+#nitroFill {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #00d9ff, #0077ff);
+    transition: width 0.2s;
+}
+
+/* أزرار التحكم */
+
+.controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin: 12px 0;
+}
+
+.controls button {
+    border: 0;
+    border-radius: 10px;
+    padding: 14px;
+    color: white;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.control-btn {
+    background: #344963;
+    min-width: 75px;
+}
+
+.start-btn {
+    background: #087f8c;
+    min-width: 130px;
+}
+
+.extra-controls {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 7px;
+}
+
+.extra-controls button {
+    padding: 11px 4px;
+    border: 0;
+    border-radius: 8px;
+    color: white;
+    background: #263e5b;
+    font-size: 13px;
+}
+
+#nitroBtn {
+    background: #006db3;
+}
+
+#shieldBtn {
+    background: #087f8c;
+}
+
+#magnetBtn {
+    background: #7b1fa2;
+}
+
+#pauseBtn {
+    background: #9a5b13;
+}
+
+.keyboard-help {
+    color: #9eacc1;
+    font-size: 13px;
+    text-align: center;
+}
+
+/* الجراج والمتجر */
+
+.garage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+    gap: 12px;
+}
+
+.car-card {
+    background: #24344d;
+    padding: 13px;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    text-align: center;
+}
+
+.car-card.selected {
+    border-color: #ffd700;
+}
+
+.car-preview {
+    font-size: 55px;
+    padding: 10px;
+}
+
+.car-card h3 {
+    color: #ffd700;
+    font-size: 16px;
+}
+
+.car-card p {
+    font-size: 14px;
+}
+
+.car-card button {
+    width: 100%;
+    padding: 10px;
+    border: 0;
+    border-radius: 8px;
+    background: #087f8c;
+    color: white;
+}
+
+.car-card button:disabled {
+    background: #555;
+}
+
+/* التطوير */
+
+.upgrade-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.upgrade-grid button,
+.settings-button {
+    padding: 13px 5px;
+    background: #263e5b;
+    color: white;
+    border: 0;
+    border-radius: 8px;
+}
+
+.upgrade-info {
+    text-align: center;
+    color: #ffd700;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+/* النتائج والترتيب */
+
+.ranking-player {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+    margin: 6px 0;
+    background: #263449;
+    border-radius: 8px;
+}
+
+.ranking-player:first-child {
+    border: 2px solid gold;
+}
+
+.danger-btn {
+    background: #a72b35;
+    color: white;
+    border: 0;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+/* المراحل */
+
+.levels-list {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+}
+
+.level-btn {
+    padding: 12px 5px;
+    border: 0;
+    border-radius: 8px;
+    background: #31435d;
+    color: white;
+    font-weight: bold;
+}
+
+.level-btn.active {
+    background: #087f8c;
+    outline: 2px solid #00d9ff;
+}
+
+.level-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.level-progress {
+    color: #ffd700;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* شاشة البداية */
+
+.main-menu {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: linear-gradient(
+        rgba(5, 12, 28, 0.92),
+        rgba(5, 12, 28, 0.97)
+    );
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.menu-content {
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    color: white;
+    padding: 30px 20px;
+    border: 2px solid #00d9ff;
+    border-radius: 22px;
+    background: #101b30;
+    box-shadow: 0 0 35px #00d9ff55;
+}
+
+.menu-content h1 {
+    color: #ffd700;
+    font-size: 42px;
+    margin: 0;
+}
+
+.menu-content h2 {
+    color: #00d9ff;
+    letter-spacing: 4px;
+}
+
+.menu-content p {
+    margin: 20px 0;
+}
+
+.menu-content label {
+    display: block;
+    margin: 15px;
+}
+
+.menu-content select,
+.menu-content button {
+    width: 100%;
+    padding: 14px;
+    margin: 8px 0;
+    border: 0;
+    border-radius: 10px;
+    font-size: 17px;
+}
+
+.menu-content select {
+    background: #263449;
+    color: white;
+}
+
+.menu-content button {
+    background: #087f8c;
+    color: white;
+    font-weight: bold;
+}
+
+.menu-content .menu-version {
+    color: #8da5c2;
+    font-size: 12px;
+}
+
+/* شريط التنقل السفلي */
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 500;
+    height: 75px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: #101b30;
+    border-top: 2px solid #00d9ff;
+    box-shadow: 0 -5px 20px #00000055;
+    padding: 5px 3px;
+}
+
+.nav-btn {
+    flex: 1;
+    height: 100%;
+    border: 0;
+    background: transparent;
+    color: #9eacc1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    border-radius: 10px;
+    transition: 0.2s;
+}
+
+.nav-btn span {
+    font-size: 22px;
+}
+
+.nav-btn small {
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.nav-btn.active {
+    color: #00d9ff;
+    background: #263e5b;
+}
+
+.nav-btn.active span {
+    transform: scale(1.1);
+}
+
+.nav-btn:hover {
+    color: #00d9ff;
+    background: #263e5b;
+}
+
+/* شاشات الموبايل */
+
+@media (max-width: 600px) {
+
+    body {
+        padding-bottom: 85px;
+    }
+
+    .top-bar {
+        font-size: 13px;
+        padding: 12px 5px;
+    }
+
+    .logo {
+        width: 100%;
+        text-align: center;
+        font-size: 19px;
+    }
+
+    .wallet,
+    .best {
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    .container {
+        width: 96%;
+        margin: 12px auto;
+    }
+
+    .panel {
+        padding: 13px;
+    }
+
+    .track-buttons {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .levels-list {
+        grid-template-columns: repeat(5, 1fr);
+    }
+
+    .extra-controls {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .upgrade-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .controls {
+        gap: 8px;
+    }
+
+    .control-btn {
+        min-width: 60px;
+    }
+
+    .start-btn {
+        min-width: 115px;
+    }
+
+    .game-hud {
+        font-size: 12px;
+    }
+
+    .nav-btn span {
+        font-size: 20px;
+    }
+
+    .nav-btn small {
+        font-size: 10px;
+    }
+
+    .bottom-nav {
+        height: 75px;
+    }
+
+    .garage-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 360px) {
+
+    .nav-btn span {
+        font-size: 17px;
+    }
+
+    .nav-btn small {
+        font-size: 9px;
+    }
+
+    .garage-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .controls button {
+        padding: 11px 5px;
+    }
+}
+
+/* =========================
+   Racing Challenge PRO V3
+========================= */
+
+:root {
+    --neon: #00d9ff;
+    --gold: #ffd700;
+    --panel: #17243a;
+    --background: #0b1220;
+}
+
+body {
+    background:
+        radial-gradient(circle at top, #162b48 0%, var(--background) 55%);
+}
+
+.panel {
+    border: 1px solid #00d9ff35;
+    box-shadow: 0 8px 30px #00000035;
+    transition: border-color .25s, transform .25s;
+}
+
+.panel:hover {
+    border-color: #00d9ff80;
+}
+
+.logo {
+    text-shadow: 0 0 12px #00d9ff88;
+}
+
+.menu-car {
+    font-size: 75px;
+    animation: carFloat 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 15px #00d9ff);
+}
+
+@keyframes carFloat {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-12px) rotate(3deg); }
+}
+
+.menu-content {
+    box-shadow: 0 0 35px #00d9ff35, inset 0 0 20px #00d9ff0c;
+}
+
+.menu-content button,
+.start-btn {
+    background: linear-gradient(135deg, #00a9c7, #087f8c);
+    box-shadow: 0 5px 18px #00d9ff25;
+}
+
+button:focus-visible,
+select:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+}
+
+.weather-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    padding: 12px;
+    background: #263449;
+    border-radius: 10px;
+    color: #b9d9ed;
+}
+
+.weather-info strong {
+    color: var(--gold);
+}
+
+.daily-challenge {
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(145deg, #203b59, #142239);
+    border: 1px solid #00d9ff55;
+    border-radius: 15px;
+}
+
+.daily-icon {
+    font-size: 55px;
+    filter: drop-shadow(0 0 10px #ffd70055);
+}
+
+.daily-challenge h3 {
+    color: var(--gold);
+}
+
+.daily-progress {
+    height: 13px;
+    width: 100%;
+    background: #101b30;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 15px 0 8px;
+}
+
+#dailyProgressFill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #00d9ff, #00ff95);
+    transition: width .3s;
+}
+
+#dailyClaimBtn {
+    width: 100%;
+    max-width: 260px;
+    padding: 13px;
+    color: white;
+    background: #087f8c;
+    border: 0;
+    border-radius: 9px;
+    font-weight: bold;
+}
+
+#dailyClaimBtn:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+}
+
+.local-note {
+    text-align: center;
+    color: #9eacc1;
+    font-size: 12px;
+}
+
+.car-card {
+    box-shadow: 0 5px 15px #00000025;
+    transition: .25s;
+}
+
+.car-card:hover {
+    transform: translateY(-4px);
+}
+
+.car-preview {
+    text-shadow: 0 0 15px currentColor;
+}
+
+.bottom-nav {
+    backdrop-filter: blur(15px);
+    background: #101b30ee;
+}
+
+.nav-btn.active {
+    box-shadow: inset 0 0 15px #00d9ff20;
+}
+
+#gameCanvas {
+    touch-action: none;
+}
+
+@media (max-width: 600px) {
+    .daily-challenge {
+        padding: 15px;
+    }
+
+    .weather-info {
+        font-size: 13px;
+    }
+
+    .menu-content h1 {
+        font-size: 36px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+    }
+}

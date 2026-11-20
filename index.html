@@ -1,0 +1,318 @@
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0b1220">
+    <meta name="description" content="Racing Challenge PRO - لعبة سباق سيارات">
+    <title>Racing Challenge PRO</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top-bar">
+    <div class="logo">🏎️ RACING PRO</div>
+    <div class="wallet">🪙 العملات: <span id="coins">0</span></div>
+    <div class="best">🏆 أفضل نتيجة: <span id="bestScore">0</span></div>
+</header>
+
+<main class="container">
+
+    <section id="homePage" class="page active-page">
+        <div class="panel">
+            <h2>🏁 اختر المضمار</h2>
+            <div class="track-buttons">
+                <button class="track-btn active" data-track="day">☀️ النهار</button>
+                <button class="track-btn" data-track="city">🌃 المدينة</button>
+                <button class="track-btn" data-track="desert">🏜️ الصحراء</button>
+                <button class="track-btn" data-track="snow">❄️ الثلج</button>
+            </div>
+
+            <div class="weather-info">
+                <span>🌦️ أجواء السباق</span>
+                <strong id="weatherName">طقس مشمس ☀️</strong>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>🎮 السباق</h2>
+            <div class="game-area">
+                <div class="game-hud">
+                    <span>⭐ النقاط: <span id="score">0</span></span>
+                    <span>⏱️ الوقت: <span id="raceTime">60</span></span>
+                    <span>🪙 العملات: <span id="raceCoins">0</span></span>
+                </div>
+
+                <div class="canvas-wrap">
+                    <canvas id="gameCanvas" width="400" height="600"></canvas>
+
+                    <div id="countdown" class="countdown hidden"></div>
+
+                    <div id="pauseOverlay" class="pause-overlay hidden">
+                        <h2>⏸️ اللعبة متوقفة</h2>
+                        <button id="resumeBtn">▶️ استكمال</button>
+                    </div>
+
+                    <div id="resultScreen" class="result-screen hidden">
+                        <h2 id="resultTitle">انتهى السباق</h2>
+                        <div id="medalResult">🏁</div>
+                        <p id="resultDetails"></p>
+                        <button id="restartBtn">🔄 إعادة السباق</button>
+                        <button id="resultMenuBtn">🏠 القائمة الرئيسية</button>
+                    </div>
+                </div>
+
+                <div class="nitro-panel">
+                    <span>⚡ النيترو</span>
+                    <div class="nitro-bar">
+                        <div id="nitroFill"></div>
+                    </div>
+                    <span id="nitroText">100%</span>
+                </div>
+
+                <div class="controls">
+                    <button id="rightBtn" class="control-btn">➡️</button>
+                    <button id="startBtn" class="start-btn">🏁 ابدأ السباق</button>
+                    <button id="leftBtn" class="control-btn">⬅️</button>
+                </div>
+
+                <div class="extra-controls">
+                    <button id="nitroBtn">⚡ نيترو</button>
+                    <button id="shieldBtn">🛡️ درع</button>
+                    <button id="magnetBtn">🧲 مغناطيس</button>
+                    <button id="pauseBtn">⏸️ إيقاف</button>
+                </div>
+
+                <p class="keyboard-help">
+                    الكمبيوتر: الأسهم للتحرك و Escape للإيقاف.
+                </p>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>🏆 ترتيب المتسابقين</h2>
+            <p class="local-note">ترتيب محلي داخل اللعبة</p>
+            <div id="raceRanking"></div>
+        </div>
+    </section>
+
+    <section id="shopPage" class="page hidden">
+        <div class="panel">
+            <h2>🚘 جراج السيارات</h2>
+            <div id="carShop" class="garage-grid"></div>
+        </div>
+
+        <div class="panel">
+            <h2>⚙️ تطوير السيارة</h2>
+            <div class="upgrade-grid">
+                <button id="speedUpgrade">🚀 تطوير السرعة</button>
+                <button id="nitroUpgrade">⚡ تطوير النيترو</button>
+                <button id="shieldUpgrade">🛡️ تطوير الدرع</button>
+            </div>
+            <p id="upgradeInfo" class="upgrade-info"></p>
+        </div>
+    </section>
+
+    <section id="resultsPage" class="page hidden">
+        <div class="panel">
+            <h2>🏆 أفضل النتائج المحلية</h2>
+            <div id="leaderboardList"></div>
+            <button id="clearRecordsBtn" class="danger-btn">🗑️ مسح النتائج المحلية</button>
+        </div>
+
+        <div class="panel">
+            <h2>🌍 أفضل 10 متسابقين أونلاين</h2>
+            <p class="local-note">النتائج المحفوظة على الإنترنت من جميع اللاعبين</p>
+            <div id="onlineLeaderboard">
+                جاري تحميل النتائج...
+            </div>
+            <button id="refreshOnlineLeaderboard" type="button">
+                🔄 تحديث النتائج
+            </button>
+        </div>
+    </section>
+
+    <section id="challengesPage" class="page hidden">
+        <div class="panel">
+            <h2>🎯 تحديات ومراحل اللعبة</h2>
+            <p id="levelProgress" class="level-progress"></p>
+            <div id="levelsList" class="levels-list"></div>
+        </div>
+
+        <div class="panel">
+            <h2>📅 التحدي اليومي</h2>
+
+            <div class="daily-challenge">
+                <div class="daily-icon">🏆</div>
+                <h3 id="dailyTitle">اجمع 5 عملات</h3>
+                <p id="dailyDescription">
+                    اجمع 5 عملات أثناء السباق واحصل على 150 عملة مكافأة.
+                </p>
+
+                <div class="daily-progress">
+                    <div id="dailyProgressFill"></div>
+                </div>
+
+                <p id="dailyProgressText">0 / 5</p>
+
+                <button id="dailyClaimBtn" disabled>
+                    🎁 استلام المكافأة
+                </button>
+
+                <p id="dailyStatus">
+                    اجمع العملات لإكمال التحدي.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="settingsPage" class="page hidden">
+        <div class="panel">
+            <h2>⚙️ إعدادات اللعبة</h2>
+            <label for="difficultySelect">مستوى الصعوبة</label>
+            <select id="difficultySelect">
+                <option value="easy">سهل</option>
+                <option value="normal" selected>متوسط</option>
+                <option value="hard">صعب</option>
+            </select>
+        </div>
+
+        <div class="panel">
+            <h2>🎮 طريقة التحكم</h2>
+            <div class="control-settings">
+                <label for="controlMode">اختر طريقة التحكم</label>
+                <select id="controlMode">
+                    <option value="buttons">الأزرار</option>
+                    <option value="tilt">إمالة الهاتف</option>
+                </select>
+                <p id="controlHint">استخدم أزرار اليمين واليسار للتحرك.</p>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>🔊 الصوت</h2>
+            <button id="soundToggle" class="settings-button">
+                🔊 الصوت: تشغيل
+            </button>
+        </div>
+
+        <div class="panel">
+            <h2>ℹ️ عن اللعبة</h2>
+            <p>Racing Challenge PRO</p>
+            <p>الإصدار 3.0</p>
+        </div>
+    </section>
+
+</main>
+
+<nav class="bottom-nav">
+    <button class="nav-btn active" data-page="homePage">
+        <span>🏠</span><small>الرئيسية</small>
+    </button>
+    <button class="nav-btn" data-page="shopPage">
+        <span>🛒</span><small>المتجر</small>
+    </button>
+    <button class="nav-btn" data-page="resultsPage">
+        <span>🏆</span><small>النتائج</small>
+    </button>
+    <button class="nav-btn" data-page="challengesPage">
+        <span>🎯</span><small>التحديات</small>
+    </button>
+    <button class="nav-btn" data-page="settingsPage">
+        <span>⚙️</span><small>الإعدادات</small>
+    </button>
+</nav>
+
+<div id="mainMenu" class="main-menu">
+    <div class="menu-content">
+        <div class="menu-car">🏎️</div>
+        <h1>RACING</h1>
+        <h2>CHALLENGE PRO</h2>
+        <p>استعد لأقوى تحديات السباق!</p>
+
+        <label for="menuTrack">اختر المضمار</label>
+        <select id="menuTrack">
+            <option value="day">النهار</option>
+            <option value="city">المدينة</option>
+            <option value="desert">الصحراء</option>
+            <option value="snow">الثلج</option>
+        </select>
+
+        <button id="menuPlayBtn">🏁 ابدأ اللعب</button>
+        <p class="menu-version">Racing Challenge PRO - V3.0</p>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+    import {
+        getAuth,
+        signInAnonymously
+    } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-analytics.js";
+    import {
+        getFirestore,
+        collection,
+        addDoc,
+        getDocs,
+        query,
+        orderBy,
+        limit
+    } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyC1DrOeWu_OCWd2CvqC-S-BwziKkqp1ZQY",
+        authDomain: "racing-game-62933.firebaseapp.com",
+        projectId: "racing-game-62933",
+        storageBucket: "racing-game-62933.firebasestorage.app",
+        messagingSenderId: "226024777371",
+        appId: "1:226024777371:web:b92d6cdd3689703ab1483e",
+        measurementId: "G-LY7KS62BGY"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const authReady = signInAnonymously(auth);
+
+    try {
+        getAnalytics(app);
+    } catch (e) {
+        // التحليلات قد لا تعمل محلياً بدون HTTPS أو دعم المتصفح
+    }
+
+    const db = getFirestore(app);
+    const resultsCollection = collection(db, "raceResults");
+
+    window.firebaseDB = {
+        async saveRaceResult({ playerName = "متسابق", score = 0, coins = 0, track = "day" }) {
+            await authReady;
+            return await addDoc(resultsCollection, {
+                playerName,
+                uid: auth.currentUser.uid,
+                score: Number(score),
+                coins: Number(coins),
+                track,
+                createdAt: Date.now()
+            });
+        },
+
+        async getTopScores(maxResults = 10) {
+            await authReady;
+            const q = query(
+                resultsCollection,
+                orderBy("score", "desc"),
+                limit(maxResults)
+            );
+            const snapshot = await getDocs(q);
+            return snapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+        }
+    };
+</script>
+
+<script type="module" src="script.js"></script>
+</body>
+</html>
